@@ -434,6 +434,18 @@ async function initSupabase(){
 
   // Listen for auth state changes
   sb.auth.onAuthStateChange(async(event,session)=>{
+    // Auto-handle token errors — wipe and show login
+    if(event==='TOKEN_REFRESHED'&&!session){
+      await sb.auth.signOut().catch(()=>{});
+      document.getElementById('overlay').style.display='none';
+      document.getElementById('authScreen').style.display='flex';
+      return;
+    }
+    if(event==='SIGNED_OUT'){
+      document.getElementById('overlay').style.display='none';
+      document.getElementById('authScreen').style.display='flex';
+      return;
+    }
     if(session&&session.user){
       USER_ID=session.user.id;
       document.getElementById('authScreen').style.display='none';
@@ -464,9 +476,24 @@ async function initSupabase(){
     }
   });
 
-  // Check existing session on load
-  const{data:{session}}=await sb.auth.getSession();
-  if(!session){
+  // Check existing session on load — auto-clear invalid/expired tokens
+  let sessionData;
+  try{
+    const res=await sb.auth.getSession();
+    if(res.error){
+      console.warn('Session error:',res.error.message);
+      await sb.auth.signOut().catch(()=>{});
+      document.getElementById('authScreen').style.display='flex';
+      return;
+    }
+    sessionData=res.data.session;
+  }catch(e){
+    console.warn('getSession threw:',e);
+    await sb.auth.signOut().catch(()=>{});
+    document.getElementById('authScreen').style.display='flex';
+    return;
+  }
+  if(!sessionData){
     document.getElementById('authScreen').style.display='flex';
   }
 }

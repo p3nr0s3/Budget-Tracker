@@ -331,8 +331,7 @@ const DEFAULT_BUDGETS={
 };
 
 // Generate stable user_id stored in localStorage
-let USER_ID=localStorage.getItem('bt_uid');
-if(!USER_ID){USER_ID='u_'+Math.random().toString(36).slice(2,10);localStorage.setItem('bt_uid',USER_ID)}
+const USER_ID = 'penroses_main';
 
 let sb,S={budgets:JSON.parse(JSON.stringify(DEFAULT_BUDGETS)),txs:{},month:null};
 let connected=false;

@@ -415,87 +415,77 @@ async function authSubmit(){
 }
 
 async function doLogout(){
+  // onAuthStateChange SIGNED_OUT akan handle UI reset
   await sb.auth.signOut();
-  USER_ID=null;
-  S={budgets:JSON.parse(JSON.stringify(DEFAULT_BUDGETS)),txs:{},month:null};
   document.getElementById('authEmail').value='';
   document.getElementById('authPass').value='';
   document.getElementById('authErr').textContent='';
-  document.getElementById('authBtn').textContent='MASUK';
-  document.getElementById('authBtn').disabled=false;
-  document.getElementById('authScreen').style.display='flex';
-  document.getElementById('userBadge').textContent='—';
-  setSyncStatus('syncing','Menghubungkan...');
 }
 
 // ── Supabase init ──
+let appReady=false;
+
+function showAuthScreen(){
+  document.getElementById('overlay').style.display='none';
+  document.getElementById('authScreen').style.display='flex';
+  document.getElementById('authBtn').disabled=false;
+  document.getElementById('authBtn').textContent='MASUK';
+}
+
+function showOverlay(msg){
+  document.getElementById('authScreen').style.display='none';
+  document.getElementById('overlay').style.display='flex';
+  document.getElementById('overlayMsg').textContent=msg||'Memuat data...';
+}
+
+async function loadAppData(session){
+  if(appReady)return; // sudah loaded, skip
+  USER_ID=session.user.id;
+  const email=session.user.email;
+  document.getElementById('userBadge').textContent=email.length>26?email.slice(0,24)+'…':email;
+  showOverlay('Memuat data...');
+  setSyncStatus('syncing','Memuat data...');
+  try{
+    S={budgets:JSON.parse(JSON.stringify(DEFAULT_BUDGETS)),txs:{},month:null};
+    const timeout=new Promise((_,rej)=>setTimeout(()=>rej(new Error('Koneksi timeout')),15000));
+    await Promise.race([Promise.all([loadBudgets(),loadTxs()]),timeout]);
+    connected=true;
+    appReady=true;
+    setSyncStatus('ok','Tersinkron');
+    document.getElementById('overlay').style.display='none';
+    const now=new Date();
+    S.month=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+    renderAll();
+  }catch(e){
+    console.error('loadAppData error:',e);
+    setSyncStatus('err','Gagal');
+    document.getElementById('overlayMsg').textContent='Gagal: '+e.message+' — refresh halaman.';
+  }
+}
+
 async function initSupabase(){
   sb=supabase.createClient(SUPA_URL,SUPA_KEY);
 
-  // Listen for auth state changes
+  // onAuthStateChange adalah SATU-SATUNYA entry point untuk semua auth events
   sb.auth.onAuthStateChange(async(event,session)=>{
-    // Auto-handle token errors — wipe and show login
-    if(event==='TOKEN_REFRESHED'&&!session){
-      await sb.auth.signOut().catch(()=>{});
-      document.getElementById('overlay').style.display='none';
-      document.getElementById('authScreen').style.display='flex';
-      return;
-    }
+    console.log('[Auth]',event,session?session.user.email:'no session');
     if(event==='SIGNED_OUT'){
-      document.getElementById('overlay').style.display='none';
-      document.getElementById('authScreen').style.display='flex';
+      appReady=false;
+      USER_ID=null;
+      S={budgets:JSON.parse(JSON.stringify(DEFAULT_BUDGETS)),txs:{},month:null};
+      document.getElementById('userBadge').textContent='—';
+      showAuthScreen();
       return;
     }
-    if(session&&session.user){
-      USER_ID=session.user.id;
-      document.getElementById('authScreen').style.display='none';
-      document.getElementById('overlay').style.display='flex';
-      document.getElementById('overlayMsg').textContent='Memuat data...';
-      const email=session.user.email;
-      document.getElementById('userBadge').textContent=email.length>26?email.slice(0,24)+'…':email;
-      try{
-        setSyncStatus('syncing','Memuat data...');
-        S={budgets:JSON.parse(JSON.stringify(DEFAULT_BUDGETS)),txs:{},month:null};
-        await loadBudgets();
-        await loadTxs();
-        connected=true;
-        setSyncStatus('ok','Tersinkron');
-        document.getElementById('overlay').style.display='none';
-        const now=new Date();
-        S.month=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-        renderAll();
-      }catch(e){
-        setSyncStatus('err','Gagal terhubung');
-        document.getElementById('overlayMsg').textContent='Gagal: '+e.message;
-        console.error(e);
-      }
-    } else {
-      // Not logged in — show auth screen
-      document.getElementById('overlay').style.display='none';
-      document.getElementById('authScreen').style.display='flex';
+    if((event==='SIGNED_IN'||event==='INITIAL_SESSION'||event==='TOKEN_REFRESHED')&&session){
+      await loadAppData(session);
+      return;
+    }
+    // INITIAL_SESSION dengan session null = tidak ada session
+    if(event==='INITIAL_SESSION'&&!session){
+      showAuthScreen();
     }
   });
-
-  // Check existing session on load — auto-clear invalid/expired tokens
-  let sessionData;
-  try{
-    const res=await sb.auth.getSession();
-    if(res.error){
-      console.warn('Session error:',res.error.message);
-      await sb.auth.signOut().catch(()=>{});
-      document.getElementById('authScreen').style.display='flex';
-      return;
-    }
-    sessionData=res.data.session;
-  }catch(e){
-    console.warn('getSession threw:',e);
-    await sb.auth.signOut().catch(()=>{});
-    document.getElementById('authScreen').style.display='flex';
-    return;
-  }
-  if(!sessionData){
-    document.getElementById('authScreen').style.display='flex';
-  }
 }
 
 function setSyncStatus(state,label){

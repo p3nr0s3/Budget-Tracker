@@ -175,12 +175,55 @@ tr:hover td{background:var(--bg3)}
   .page{display:block!important;padding:0}
   .page:not(.active){display:none!important}
 }
+
+/* AUTH SCREEN */
+.auth-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000}
+.auth-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:32px 36px;width:340px;display:flex;flex-direction:column;gap:20px}
+.auth-logo{text-align:center}
+.auth-logo-title{font-family:var(--display);font-size:22px;font-weight:700;color:var(--ink)}
+.auth-logo-sub{font-size:10px;color:var(--green);font-family:var(--mono);margin-top:4px;letter-spacing:.1em}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.auth-tab{padding:7px;font-size:11px;font-family:var(--mono);text-align:center;cursor:pointer;background:var(--bg3);color:var(--ink3);letter-spacing:.08em;transition:all .12s}
+.auth-tab.active{background:var(--bg2);color:var(--green)}
+.auth-fields{display:flex;flex-direction:column;gap:10px}
+.auth-field label{font-size:9px;letter-spacing:.15em;color:var(--ink4);text-transform:uppercase;display:block;margin-bottom:5px}
+.auth-field input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:8px 10px;font-size:12px;font-family:var(--mono);color:var(--ink);outline:none}
+.auth-field input:focus{border-color:var(--green)}
+.auth-btn{width:100%;padding:9px;background:var(--green);color:#0d1117;border:none;font-size:11px;font-family:var(--mono);letter-spacing:.1em;font-weight:500;cursor:pointer;border-radius:var(--radius);transition:all .12s}
+.auth-btn:hover{background:var(--green2)}
+.light .auth-btn{color:#fff}
+.auth-err{font-size:11px;color:var(--red);text-align:center;font-family:var(--mono);min-height:16px}
+.auth-info{font-size:10px;color:var(--ink4);text-align:center;font-family:var(--mono)}
+.logout-btn{width:100%;background:none;border:1px solid var(--border);color:var(--ink4);padding:6px;font-size:10px;font-family:var(--mono);letter-spacing:.1em;cursor:pointer;border-radius:var(--radius);transition:all .12s}
+.logout-btn:hover{border-color:var(--red);color:var(--red)}
+.user-badge{font-size:9px;color:var(--ink4);font-family:var(--mono);text-align:center;padding:4px 0;border-bottom:1px solid var(--border);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>
 </head>
 <body>
 
+<!-- Auth Screen -->
+<div class="auth-screen" id="authScreen">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="auth-logo-title">The Ledger</div>
+      <div class="auth-logo-sub">$ budget --auth<span class="cursor"></span></div>
+    </div>
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tabLogin" onclick="switchTab('login')">LOGIN</div>
+      <div class="auth-tab" id="tabRegister" onclick="switchTab('register')">DAFTAR</div>
+    </div>
+    <div class="auth-fields">
+      <div class="auth-field"><label>Email</label><input type="email" id="authEmail" placeholder="user@example.com" onkeydown="if(event.key==='Enter')authSubmit()"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="authPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')authSubmit()"></div>
+    </div>
+    <div class="auth-err" id="authErr"></div>
+    <button class="auth-btn" id="authBtn" onclick="authSubmit()">MASUK</button>
+    <div class="auth-info" id="authInfo">Belum punya akun? Klik DAFTAR di atas.</div>
+  </div>
+</div>
+
 <!-- Loading overlay -->
-<div class="overlay" id="overlay">
+<div class="overlay" id="overlay" style="display:none">
   <div class="spinner"></div>
   <div class="overlay-title">The Ledger</div>
   <div class="overlay-sub" id="overlayMsg">Menghubungkan ke database...</div>
@@ -207,8 +250,10 @@ tr:hover td{background:var(--bg3)}
     <div class="nav-item" onclick="nav('pengaturan',this)"><span class="nav-roman">V.</span> Pengaturan</div>
   </nav>
   <div class="sidebar-foot">
+    <div class="user-badge" id="userBadge">—</div>
     <div class="sync-status"><div class="sync-dot" id="syncDot"></div><span id="syncLabel">Menghubungkan...</span></div>
     <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">☀ Light Mode</button>
+    <button class="logout-btn" onclick="doLogout()">⏻ LOGOUT</button>
   </div>
 </aside>
 
@@ -330,29 +375,99 @@ const DEFAULT_BUDGETS={
   saving:[{name:'Dana Darurat',budget:500000},{name:'Tabungan Tujuan',budget:200000},{name:'Investasi',budget:0}]
 };
 
-// Generate stable user_id stored in localStorage
-const USER_ID = 'penroses_main';
-
-let sb,S={budgets:JSON.parse(JSON.stringify(DEFAULT_BUDGETS)),txs:{},month:null};
+let sb,USER_ID=null;
+let S={budgets:JSON.parse(JSON.stringify(DEFAULT_BUDGETS)),txs:{},month:null};
 let connected=false;
+
+// ── Auth UI ──
+let authMode='login';
+function switchTab(mode){
+  authMode=mode;
+  document.getElementById('tabLogin').classList.toggle('active',mode==='login');
+  document.getElementById('tabRegister').classList.toggle('active',mode==='register');
+  document.getElementById('authBtn').textContent=mode==='login'?'MASUK':'DAFTAR';
+  document.getElementById('authInfo').textContent=mode==='login'?'Belum punya akun? Klik DAFTAR di atas.':'Sudah punya akun? Klik LOGIN di atas.';
+  document.getElementById('authErr').textContent='';
+}
+
+async function authSubmit(){
+  const email=document.getElementById('authEmail').value.trim();
+  const pass=document.getElementById('authPass').value;
+  const errEl=document.getElementById('authErr');
+  const btn=document.getElementById('authBtn');
+  if(!email||!pass){errEl.textContent='Email dan password wajib diisi.';return}
+  btn.textContent='...';btn.disabled=true;errEl.textContent='';
+  try{
+    let result;
+    if(authMode==='login'){
+      result=await sb.auth.signInWithPassword({email,password:pass});
+    } else {
+      result=await sb.auth.signUp({email,password:pass});
+      if(!result.error&&result.data.user&&!result.data.session){
+        errEl.style.color='var(--green)';
+        errEl.textContent='Cek email kamu untuk konfirmasi akun.';
+        btn.textContent='DAFTAR';btn.disabled=false;return;
+      }
+    }
+    if(result.error){errEl.style.color='var(--red)';errEl.textContent=result.error.message;btn.textContent=authMode==='login'?'MASUK':'DAFTAR';btn.disabled=false;return}
+    // success — onAuthStateChange will handle the rest
+  }catch(e){errEl.style.color='var(--red)';errEl.textContent=e.message;btn.textContent=authMode==='login'?'MASUK':'DAFTAR';btn.disabled=false}
+}
+
+async function doLogout(){
+  await sb.auth.signOut();
+  USER_ID=null;
+  S={budgets:JSON.parse(JSON.stringify(DEFAULT_BUDGETS)),txs:{},month:null};
+  document.getElementById('authEmail').value='';
+  document.getElementById('authPass').value='';
+  document.getElementById('authErr').textContent='';
+  document.getElementById('authBtn').textContent='MASUK';
+  document.getElementById('authBtn').disabled=false;
+  document.getElementById('authScreen').style.display='flex';
+  document.getElementById('userBadge').textContent='—';
+  setSyncStatus('syncing','Menghubungkan...');
+}
 
 // ── Supabase init ──
 async function initSupabase(){
-  try{
-    sb=supabase.createClient(SUPA_URL,SUPA_KEY);
-    setSyncStatus('syncing','Memuat data...');
-    await loadBudgets();
-    await loadTxs();
-    connected=true;
-    setSyncStatus('ok','Tersinkron');
-    document.getElementById('overlay').style.display='none';
-    const now=new Date();
-    S.month=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-    renderAll();
-  }catch(e){
-    setSyncStatus('err','Gagal terhubung');
-    document.getElementById('overlayMsg').textContent='Gagal: '+e.message;
-    console.error(e);
+  sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+
+  // Listen for auth state changes
+  sb.auth.onAuthStateChange(async(event,session)=>{
+    if(session&&session.user){
+      USER_ID=session.user.id;
+      document.getElementById('authScreen').style.display='none';
+      document.getElementById('overlay').style.display='flex';
+      document.getElementById('overlayMsg').textContent='Memuat data...';
+      const email=session.user.email;
+      document.getElementById('userBadge').textContent=email.length>26?email.slice(0,24)+'…':email;
+      try{
+        setSyncStatus('syncing','Memuat data...');
+        S={budgets:JSON.parse(JSON.stringify(DEFAULT_BUDGETS)),txs:{},month:null};
+        await loadBudgets();
+        await loadTxs();
+        connected=true;
+        setSyncStatus('ok','Tersinkron');
+        document.getElementById('overlay').style.display='none';
+        const now=new Date();
+        S.month=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+        renderAll();
+      }catch(e){
+        setSyncStatus('err','Gagal terhubung');
+        document.getElementById('overlayMsg').textContent='Gagal: '+e.message;
+        console.error(e);
+      }
+    } else {
+      // Not logged in — show auth screen
+      document.getElementById('overlay').style.display='none';
+      document.getElementById('authScreen').style.display='flex';
+    }
+  });
+
+  // Check existing session on load
+  const{data:{session}}=await sb.auth.getSession();
+  if(!session){
+    document.getElementById('authScreen').style.display='flex';
   }
 }
 

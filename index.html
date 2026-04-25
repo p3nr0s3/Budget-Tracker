@@ -197,6 +197,47 @@ tr:hover td{background:var(--bg3)}
 .logout-btn{width:100%;background:none;border:1px solid var(--border);color:var(--ink4);padding:6px;font-size:10px;font-family:var(--mono);letter-spacing:.1em;cursor:pointer;border-radius:var(--radius);transition:all .12s}
 .logout-btn:hover{border-color:var(--red);color:var(--red)}
 .user-badge{font-size:9px;color:var(--ink4);font-family:var(--mono);text-align:center;padding:4px 0;border-bottom:1px solid var(--border);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ── RESPONSIVE / MOBILE ── */
+@media(max-width:768px){
+  .shell{flex-direction:column;height:auto;min-height:100vh}
+  .sidebar{width:100%;height:auto;border-right:none;border-bottom:1px solid var(--border);flex-direction:column}
+  .sidebar-head{padding:12px 16px 10px}
+  .sidebar-title{font-size:16px}
+  .month-wrap{padding:8px 12px}
+  .nav{display:flex;flex-direction:row;padding:4px 8px;overflow-x:auto;gap:2px;flex:unset}
+  .nav-item{padding:6px 10px;border-left:none;border-bottom:2px solid transparent;white-space:nowrap;font-size:11px}
+  .nav-item.active{border-left-color:transparent;border-bottom-color:var(--green)}
+  .nav-roman{display:none}
+  .sidebar-foot{flex-direction:row;flex-wrap:wrap;padding:8px 12px;gap:6px;align-items:center}
+  .sync-status{flex:1}
+  .theme-btn{width:auto;padding:5px 10px}
+  .logout-btn{width:auto;padding:5px 10px}
+  .user-badge{display:none}
+  .main{height:auto;overflow-y:visible}
+  .page{padding:16px 14px}
+  .metric-strip{grid-template-columns:repeat(2,1fr)}
+  .col-head{display:none}
+  .ledger-row{grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:6px;padding:10px 10px}
+  .ledger-row>div:first-child{grid-column:1/-1}
+  .row-pct{text-align:left}
+  .ledger-total{grid-template-columns:1fr 1fr 1fr;font-size:11px}
+  .tx-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto;gap:8px}
+  .tx-grid .btn{grid-column:1/-1}
+  .chart-grid{grid-template-columns:1fr}
+  .auth-card{width:90%;padding:24px 20px}
+  .ledger-input{font-size:14px;padding:7px 8px}
+  .sett-row{grid-template-columns:1fr 120px}
+  table{font-size:11px}
+  th,td{padding:7px 8px}
+}
+
+@media(max-width:400px){
+  .metric-strip{grid-template-columns:1fr 1fr}
+  .metric-val{font-size:16px}
+  .page-title{font-size:18px}
+  .tx-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>

@@ -4,10 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0d1117">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="The Ledger">
 <link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgcng9IjMyIiBmaWxsPSIjMGQxMTE3Ii8+PHJlY3QgeD0iMTIiIHk9IjEyIiB3aWR0aD0iMTY4IiBoZWlnaHQ9IjE2OCIgcng9IjI0IiBmaWxsPSIjMTYxYjIyIi8+PHRleHQgeD0iOTYiIHk9IjEzMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iOTYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiM1N2FiNWEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPiYjODM1Njs8L3RleHQ+PC9zdmc+">
+<link rel="shortcut icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgcng9IjMyIiBmaWxsPSIjMGQxMTE3Ii8+PHJlY3QgeD0iMTIiIHk9IjEyIiB3aWR0aD0iMTY4IiBoZWlnaHQ9IjE2OCIgcng9IjI0IiBmaWxsPSIjMTYxYjIyIi8+PHRleHQgeD0iOTYiIHk9IjEzMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iOTYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiM1N2FiNWEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPiYjODM1Njs8L3RleHQ+PC9zdmc+">
 <title>Budget Tracker — The Ledger</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -218,8 +221,8 @@ tr:hover td{background:var(--bg3)}
 .goal-actions{display:flex;gap:6px}
 .goal-form{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:16px}
 .goal-form-title{font-family:var(--display);font-size:13px;font-weight:600;color:var(--ink);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
-.goal-inputs{display:grid;grid-template-columns:1fr 1fr 1fr 130px;gap:10px;align-items:end}
-.health-bar{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px}
+.goal-inputs{display:grid;grid-template-columns:1fr 1fr 1fr 130px auto;gap:10px;align-items:end}
+.health-bar,.health-wrap{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px}
 .health-score{font-family:var(--display);font-size:32px;font-weight:700;line-height:1;min-width:52px}
 .health-label{font-size:11px;color:var(--ink4);font-family:var(--mono);margin-top:3px}
 .health-detail{display:flex;flex-direction:column;gap:4px;flex:1}
@@ -232,29 +235,6 @@ tr:hover td{background:var(--bg3)}
 .recur-form{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:16px}
 .recur-form-title{font-family:var(--display);font-size:13px;font-weight:600;color:var(--ink);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
 .recur-inputs{display:grid;grid-template-columns:80px 1fr 1fr 130px 80px auto;gap:10px;align-items:end}
-
-/* GOALS */
-.goals-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:20px}
-.goal-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;display:flex;flex-direction:column;gap:10px}
-.goal-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
-.goal-name{font-family:var(--display);font-size:15px;font-weight:600;color:var(--ink)}
-.goal-deadline{font-size:10px;color:var(--ink4);font-family:var(--mono);margin-top:2px}
-.goal-amounts{display:flex;justify-content:space-between;align-items:baseline}
-.goal-saved{font-family:var(--display);font-size:18px;font-weight:700}
-.goal-target{font-size:11px;color:var(--ink4);font-family:var(--mono)}
-.goal-bar{height:4px;background:var(--bg4);border-radius:99px;overflow:hidden}
-.goal-bar-fill{height:100%;border-radius:99px;transition:width .4s}
-.goal-pct{font-size:10px;color:var(--ink4);font-family:var(--mono);text-align:right}
-.goal-actions{display:flex;gap:6px}
-.goal-form{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:16px}
-.goal-form-title{font-family:var(--display);font-size:13px;font-weight:600;color:var(--ink);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
-.goal-inputs{display:grid;grid-template-columns:1fr 1fr 1fr 130px auto;gap:10px;align-items:end}
-.health-wrap{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px}
-.health-score{font-family:var(--display);font-size:32px;font-weight:700;line-height:1;min-width:52px}
-.health-label{font-size:11px;color:var(--ink4);font-family:var(--mono);margin-top:3px}
-.health-detail{display:flex;flex-direction:column;gap:4px;flex:1}
-.health-item{display:flex;justify-content:space-between;font-size:11px;font-family:var(--mono)}
-.health-item span:first-child{color:var(--ink3)}
 .recur-list{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
 .recur-form{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:16px}
 .recur-form-title{font-family:var(--display);font-size:13px;font-weight:600;color:var(--ink);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}

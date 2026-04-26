@@ -200,43 +200,84 @@ tr:hover td{background:var(--bg3)}
 
 /* ── RESPONSIVE / MOBILE ── */
 @media(max-width:768px){
+  /* Shell: stack vertically */
   .shell{flex-direction:column;height:auto;min-height:100vh}
-  .sidebar{width:100%;height:auto;border-right:none;border-bottom:1px solid var(--border);flex-direction:column}
-  .sidebar-head{padding:12px 16px 10px}
-  .sidebar-title{font-size:16px}
-  .month-wrap{padding:8px 12px}
-  .nav{display:flex;flex-direction:row;padding:4px 8px;overflow-x:auto;gap:2px;flex:unset}
-  .nav-item{padding:6px 10px;border-left:none;border-bottom:2px solid transparent;white-space:nowrap;font-size:11px}
-  .nav-item.active{border-left-color:transparent;border-bottom-color:var(--green)}
+
+  /* Sidebar: compact top bar */
+  .sidebar{width:100%;height:auto;border-right:none;border-bottom:1px solid var(--border);flex-direction:column;flex-shrink:0}
+  .sidebar-head{padding:10px 14px 8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;border-bottom:none}
+  .sidebar-eyebrow{display:none}
+  .sidebar-title{font-size:15px;display:flex;align-items:center;gap:8px}
+  .sidebar-title .term{display:inline;margin-top:0;font-size:10px}
+
+  /* Month selector inline */
+  .month-wrap{padding:0 14px 8px;border-bottom:none}
+  .month-wrap label{display:none}
+  select{width:auto;font-size:11px;padding:4px 6px}
+
+  /* Nav: horizontal scrollable tabs */
+  .nav{display:flex;flex-direction:row;padding:0 8px 8px;overflow-x:auto;gap:2px;flex:unset;border-bottom:1px solid var(--border);-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .nav::-webkit-scrollbar{display:none}
+  .nav-item{padding:6px 12px;border-left:none;border-bottom:2px solid transparent;white-space:nowrap;font-size:11px;border-radius:var(--radius) var(--radius) 0 0}
+  .nav-item.active{border-left-color:transparent;border-bottom-color:var(--green);background:var(--bg3)}
   .nav-roman{display:none}
-  .sidebar-foot{flex-direction:row;flex-wrap:wrap;padding:8px 12px;gap:6px;align-items:center}
-  .sync-status{flex:1}
-  .theme-btn{width:auto;padding:5px 10px}
-  .logout-btn{width:auto;padding:5px 10px}
+
+  /* Footer: horizontal compact */
+  .sidebar-foot{flex-direction:row;flex-wrap:wrap;padding:6px 14px;gap:6px;align-items:center;border-top:1px solid var(--border)}
+  .sync-status{flex:1;min-width:80px}
+  .theme-btn{width:auto;padding:4px 10px;font-size:9px}
+  .logout-btn{width:auto;padding:4px 10px;font-size:9px}
   .user-badge{display:none}
+
+  /* Main content */
   .main{height:auto;overflow-y:visible}
-  .page{padding:16px 14px}
+  .page{padding:14px 12px;max-width:100%}
+  .page-title{font-size:20px}
+  .page-prompt{font-size:10px}
+
+  /* Metrics: 2x2 grid */
   .metric-strip{grid-template-columns:repeat(2,1fr)}
+  .metric-val{font-size:18px}
+  .metric-cell{padding:10px 12px}
+
+  /* Ledger: mobile-friendly columns */
   .col-head{display:none}
-  .ledger-row{grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:6px;padding:10px 10px}
+  .ledger-row{grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:4px 8px;padding:10px}
   .ledger-row>div:first-child{grid-column:1/-1}
-  .row-pct{text-align:left}
-  .ledger-total{grid-template-columns:1fr 1fr 1fr;font-size:11px}
-  .tx-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto;gap:8px}
+  .row-pct{text-align:left;font-size:10px}
+  .ledger-input{font-size:14px;padding:6px 8px}
+  .ledger-total{grid-template-columns:1fr 1fr 1fr;font-size:11px;padding:8px 10px}
+
+  /* Transaction form */
+  .tx-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .tx-grid>:nth-child(3){grid-column:1/-1}
   .tx-grid .btn{grid-column:1/-1}
+
+  /* Charts */
   .chart-grid{grid-template-columns:1fr}
-  .auth-card{width:90%;padding:24px 20px}
-  .ledger-input{font-size:14px;padding:7px 8px}
-  .sett-row{grid-template-columns:1fr 120px}
+  .chart-wrap{height:180px}
+
+  /* Auth card */
+  .auth-card{width:92%;padding:24px 18px}
+
+  /* Settings */
+  .sett-row{grid-template-columns:1fr 110px;padding:8px 12px}
+
+  /* Tables */
   table{font-size:11px}
-  th,td{padding:7px 8px}
+  th,td{padding:6px 8px}
+  .action-bar{gap:6px}
+  .btn{padding:7px 10px;font-size:10px}
 }
 
 @media(max-width:400px){
   .metric-strip{grid-template-columns:1fr 1fr}
-  .metric-val{font-size:16px}
+  .metric-val{font-size:15px}
   .page-title{font-size:18px}
   .tx-grid{grid-template-columns:1fr}
+  .page{padding:12px 10px}
+  .ledger-row{grid-template-columns:1fr}
+  .ledger-total{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
@@ -602,6 +643,8 @@ async function deleteTxDB(id){
 
 // ── Helpers ──
 const idr=n=>'Rp '+Math.round(n).toLocaleString('id-ID');
+const fmtNum=n=>Math.round(n||0).toLocaleString('id-ID');
+const unFmt=s=>+(String(s).replace(/[^0-9]/g,''))||0;
 const pct=(a,b)=>b===0?0:Math.round(a/b*100);
 const mLabel=m=>{const[y,mo]=m.split('-');return`${MONTHS[+mo-1]} ${y}`};
 const mTxs=m=>S.txs[m]||[];
@@ -667,8 +710,8 @@ function renderSection(rowsId,countId,type,m){
     return`<div class="ledger-row">
       <div><div class="row-name">${r.name}</div>
       <div class="bar-thin"><div class="bar-fill ${cls}" style="width:${Math.min(p,100)}%"></div></div></div>
-      <input class="ledger-input" type="number" value="${r.budget}" min="0" onchange="updBudget('${type}','${r.name}',+this.value)">
-      <input class="ledger-input" type="number" value="${real||''}" min="0" placeholder="0" onchange="logQuick('${type}','${r.name}',+this.value,'${m}')">
+      <input class="ledger-input" type="text" inputmode="numeric" value="${fmtNum(r.budget)}" placeholder="0" onfocus="this.value=unFmt(this.value)" onblur="this.value=fmtNum(unFmt(this.value)||0);updBudget('${type}','${r.name}',unFmt(this.value))">
+      <input class="ledger-input" type="text" inputmode="numeric" value="${real?fmtNum(real):''}" placeholder="0" onfocus="this.value=unFmt(this.value)" onblur="this.value=fmtNum(unFmt(this.value));logQuick('${type}','${r.name}',unFmt(this.value),'${m}')">
       <div class="row-pct ${cls}">${r.budget?p+'%':'—'}</div>
     </div>`;
   }).join('');
@@ -832,7 +875,7 @@ function renderSettings(){
     document.getElementById(id).innerHTML=S.budgets[type].map((r,i)=>`
       <div class="sett-row">
         <div><div class="sett-label">${r.name}</div><div class="sett-note">${idr(r.budget)}</div></div>
-        <input class="ledger-input" style="width:150px" type="number" value="${r.budget}" id="s_${type}_${i}" min="0">
+        <input class="ledger-input" style="width:150px" type="text" inputmode="numeric" value="${fmtNum(r.budget)}" id="s_${type}_${i}" placeholder="0" onfocus="this.value=unFmt(this.value)" onblur="this.value=fmtNum(unFmt(this.value)||0)">
       </div>`).join('');
   });
 }

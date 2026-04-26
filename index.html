@@ -4,13 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0d1117">
-<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="The Ledger">
 <link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgcng9IjMyIiBmaWxsPSIjMGQxMTE3Ii8+PHJlY3QgeD0iMTIiIHk9IjEyIiB3aWR0aD0iMTY4IiBoZWlnaHQ9IjE2OCIgcng9IjI0IiBmaWxsPSIjMTYxYjIyIi8+PHRleHQgeD0iOTYiIHk9IjEzMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iOTYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiM1N2FiNWEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPiYjODM1Njs8L3RleHQ+PC9zdmc+">
-<link rel="shortcut icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgcng9IjMyIiBmaWxsPSIjMGQxMTE3Ii8+PHJlY3QgeD0iMTIiIHk9IjEyIiB3aWR0aD0iMTY4IiBoZWlnaHQ9IjE2OCIgcng9IjI0IiBmaWxsPSIjMTYxYjIyIi8+PHRleHQgeD0iOTYiIHk9IjEzMCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsc2VyaWYiIGZvbnQtc2l6ZT0iOTYiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiM1N2FiNWEiIHRleHQtYW5jaG9yPSJtaWRkbGUiPiYjODM1Njs8L3RleHQ+PC9zdmc+">
 <title>Budget Tracker — The Ledger</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Mono:wght@400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -206,6 +203,63 @@ tr:hover td{background:var(--bg3)}
 .logout-btn:hover{border-color:var(--red);color:var(--red)}
 .user-badge{font-size:9px;color:var(--ink4);font-family:var(--mono);text-align:center;padding:4px 0;border-bottom:1px solid var(--border);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
+/* GOALS */
+.goals-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:20px}
+.goal-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.goal-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.goal-name{font-family:var(--display);font-size:15px;font-weight:600;color:var(--ink)}
+.goal-deadline{font-size:10px;color:var(--ink4);font-family:var(--mono);margin-top:2px}
+.goal-amounts{display:flex;justify-content:space-between;align-items:baseline}
+.goal-saved{font-family:var(--display);font-size:18px;font-weight:700}
+.goal-target{font-size:11px;color:var(--ink4);font-family:var(--mono)}
+.goal-bar{height:4px;background:var(--bg4);border-radius:99px;overflow:hidden}
+.goal-bar-fill{height:100%;border-radius:99px;transition:width .4s}
+.goal-pct{font-size:10px;color:var(--ink4);font-family:var(--mono);text-align:right}
+.goal-actions{display:flex;gap:6px}
+.goal-form{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:16px}
+.goal-form-title{font-family:var(--display);font-size:13px;font-weight:600;color:var(--ink);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.goal-inputs{display:grid;grid-template-columns:1fr 1fr 1fr 130px;gap:10px;align-items:end}
+.health-bar{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px}
+.health-score{font-family:var(--display);font-size:32px;font-weight:700;line-height:1;min-width:52px}
+.health-label{font-size:11px;color:var(--ink4);font-family:var(--mono);margin-top:3px}
+.health-detail{display:flex;flex-direction:column;gap:4px;flex:1}
+.health-item{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-family:var(--mono)}
+.health-item span:first-child{color:var(--ink3)}
+.health-item span:last-child{color:var(--ink)}
+
+/* RECURRING */
+.recur-list{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
+.recur-form{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:16px}
+.recur-form-title{font-family:var(--display);font-size:13px;font-weight:600;color:var(--ink);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.recur-inputs{display:grid;grid-template-columns:80px 1fr 1fr 130px 80px auto;gap:10px;align-items:end}
+
+/* GOALS */
+.goals-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-bottom:20px}
+.goal-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.goal-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.goal-name{font-family:var(--display);font-size:15px;font-weight:600;color:var(--ink)}
+.goal-deadline{font-size:10px;color:var(--ink4);font-family:var(--mono);margin-top:2px}
+.goal-amounts{display:flex;justify-content:space-between;align-items:baseline}
+.goal-saved{font-family:var(--display);font-size:18px;font-weight:700}
+.goal-target{font-size:11px;color:var(--ink4);font-family:var(--mono)}
+.goal-bar{height:4px;background:var(--bg4);border-radius:99px;overflow:hidden}
+.goal-bar-fill{height:100%;border-radius:99px;transition:width .4s}
+.goal-pct{font-size:10px;color:var(--ink4);font-family:var(--mono);text-align:right}
+.goal-actions{display:flex;gap:6px}
+.goal-form{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:16px}
+.goal-form-title{font-family:var(--display);font-size:13px;font-weight:600;color:var(--ink);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.goal-inputs{display:grid;grid-template-columns:1fr 1fr 1fr 130px auto;gap:10px;align-items:end}
+.health-wrap{display:flex;align-items:center;gap:12px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin-bottom:16px}
+.health-score{font-family:var(--display);font-size:32px;font-weight:700;line-height:1;min-width:52px}
+.health-label{font-size:11px;color:var(--ink4);font-family:var(--mono);margin-top:3px}
+.health-detail{display:flex;flex-direction:column;gap:4px;flex:1}
+.health-item{display:flex;justify-content:space-between;font-size:11px;font-family:var(--mono)}
+.health-item span:first-child{color:var(--ink3)}
+.recur-list{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
+.recur-form{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;margin-bottom:16px}
+.recur-form-title{font-family:var(--display);font-size:13px;font-weight:600;color:var(--ink);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.recur-inputs{display:grid;grid-template-columns:70px 1fr 1fr 130px 70px auto;gap:10px;align-items:end}
+
 /* ── RESPONSIVE / MOBILE ── */
 @media(max-width:768px){
   /* Shell: stack vertically */
@@ -338,6 +392,8 @@ tr:hover td{background:var(--bg3)}
     <div class="nav-item" onclick="nav('grafik',this)"><span class="nav-roman">III.</span> Grafik</div>
     <div class="nav-item" onclick="nav('laporan',this)"><span class="nav-roman">IV.</span> Laporan</div>
     <div class="nav-item" onclick="nav('pengaturan',this)"><span class="nav-roman">V.</span> Pengaturan</div>
+    <div class="nav-item" onclick="nav('goals',this)"><span class="nav-roman">VI.</span> Goals</div>
+    <div class="nav-item" onclick="nav('recurring',this)"><span class="nav-roman">VII.</span> Recurring</div>
   </nav>
   <div class="sidebar-foot">
     <div class="user-badge" id="userBadge">—</div>
@@ -449,6 +505,101 @@ tr:hover td{background:var(--bg3)}
   </div>
 </div>
 
+<!-- VI. GOALS -->
+<div id="page-goals" class="page">
+  <div class="page-head">
+    <div class="page-prompt"><span class="ps">~/finance</span> $ <span class="cmd">budget</span> <span class="flag">goals</span> --track</div>
+    <div class="page-title">Savings Goals</div>
+    <div class="page-rule"></div>
+  </div>
+  <div id="healthBar"></div>
+  <div class="goal-form">
+    <div class="goal-form-title">+ Tambah Goal Baru</div>
+    <div class="goal-inputs">
+      <div class="form-group"><label>Nama Goal</label><input type="text" id="gName" placeholder="Dana Darurat"></div>
+      <div class="form-group"><label>Target (Rp)</label><input type="text" inputmode="numeric" id="gTarget" placeholder="10.000.000" onfocus="this.value=unFmt(this.value)||''" onblur="this.value=fmtNum(unFmt(this.value))"></div>
+      <div class="form-group"><label>Sudah Terkumpul (Rp)</label><input type="text" inputmode="numeric" id="gSaved" placeholder="0" onfocus="this.value=unFmt(this.value)||''" onblur="this.value=fmtNum(unFmt(this.value))"></div>
+      <div class="form-group"><label>Deadline</label><input type="month" id="gDeadline"></div>
+      <button class="btn btn-primary" onclick="addGoal()">+ TAMBAH</button>
+    </div>
+  </div>
+  <div class="goals-grid" id="goalsGrid"></div>
+</div>
+
+<!-- VII. RECURRING -->
+<div id="page-recurring" class="page">
+  <div class="page-head">
+    <div class="page-prompt"><span class="ps">~/finance</span> $ <span class="cmd">budget</span> <span class="flag">recurring</span> --list</div>
+    <div class="page-title">Transaksi Berulang</div>
+    <div class="page-rule"></div>
+  </div>
+  <div class="recur-form">
+    <div class="recur-form-title">+ Tambah Template Berulang</div>
+    <div class="recur-inputs">
+      <div class="form-group"><label>Tgl/Bln</label><input type="number" id="rDay" min="1" max="28" value="1" placeholder="1"></div>
+      <div class="form-group"><label>Kategori</label><select id="rCat"></select></div>
+      <div class="form-group"><label>Keterangan</label><input type="text" id="rNote" placeholder="Cicilan KPR"></div>
+      <div class="form-group"><label>Jumlah (Rp)</label><input type="text" inputmode="numeric" id="rAmt" placeholder="0" onfocus="this.value=unFmt(this.value)||''" onblur="this.value=fmtNum(unFmt(this.value))"></div>
+      <div class="form-group"><label>Aktif</label><select id="rActive"><option value="true">Ya</option><option value="false">Tidak</option></select></div>
+      <button class="btn btn-primary" onclick="addRecurring()">+ TAMBAH</button>
+    </div>
+  </div>
+  <div class="recur-list" id="recurList">
+    <table><thead><tr><th>Tgl</th><th>Kategori</th><th>Keterangan</th><th style="text-align:right">Jumlah</th><th>Status</th><th></th></tr></thead>
+    <tbody id="recurBody"></tbody></table>
+  </div>
+  <div class="action-bar">
+    <button class="btn btn-primary" onclick="applyRecurring()">⟳ TERAPKAN KE BULAN INI</button>
+  </div>
+</div>
+
+<!-- VI. GOALS -->
+<div id="page-goals" class="page">
+  <div class="page-head">
+    <div class="page-prompt"><span class="ps">~/finance</span> $ <span class="cmd">budget</span> <span class="flag">goals</span> --track</div>
+    <div class="page-title">Savings Goals</div>
+    <div class="page-rule"></div>
+  </div>
+  <div id="healthBar"></div>
+  <div class="goal-form">
+    <div class="goal-form-title">+ Tambah Goal Baru</div>
+    <div class="goal-inputs">
+      <div class="form-group"><label>Nama Goal</label><input type="text" id="gName" placeholder="Dana Darurat"></div>
+      <div class="form-group"><label>Target (Rp)</label><input type="text" inputmode="numeric" id="gTarget" placeholder="10.000.000" onfocus="this.value=unFmt(this.value)||''" onblur="this.value=fmtNum(unFmt(this.value))"></div>
+      <div class="form-group"><label>Sudah Terkumpul (Rp)</label><input type="text" inputmode="numeric" id="gSaved" placeholder="0" onfocus="this.value=unFmt(this.value)||''" onblur="this.value=fmtNum(unFmt(this.value))"></div>
+      <div class="form-group"><label>Deadline</label><input type="month" id="gDeadline"></div>
+      <button class="btn btn-primary" onclick="addGoal()">+ TAMBAH</button>
+    </div>
+  </div>
+  <div class="goals-grid" id="goalsGrid"></div>
+</div>
+
+<!-- VII. RECURRING -->
+<div id="page-recurring" class="page">
+  <div class="page-head">
+    <div class="page-prompt"><span class="ps">~/finance</span> $ <span class="cmd">budget</span> <span class="flag">recurring</span> --list</div>
+    <div class="page-title">Transaksi Berulang</div>
+    <div class="page-rule"></div>
+  </div>
+  <div class="recur-form">
+    <div class="recur-form-title">+ Tambah Template Berulang</div>
+    <div class="recur-inputs">
+      <div class="form-group"><label>Tgl/Bln</label><input type="number" id="rDay" min="1" max="28" value="1"></div>
+      <div class="form-group"><label>Kategori</label><select id="rCat"></select></div>
+      <div class="form-group"><label>Keterangan</label><input type="text" id="rNote" placeholder="Cicilan KPR"></div>
+      <div class="form-group"><label>Jumlah (Rp)</label><input type="text" inputmode="numeric" id="rAmt" placeholder="0" onfocus="this.value=unFmt(this.value)||''" onblur="this.value=fmtNum(unFmt(this.value))"></div>
+      <div class="form-group"><label>Aktif</label><select id="rActive"><option value="true">Ya</option><option value="false">Tidak</option></select></div>
+      <button class="btn btn-primary" onclick="addRecurring()">+ TAMBAH</button>
+    </div>
+  </div>
+  <div class="recur-list">
+    <table><thead><tr><th>Tgl</th><th>Kategori</th><th>Keterangan</th><th style="text-align:right">Jumlah</th><th>Status</th><th></th></tr></thead>
+    <tbody id="recurBody"></tbody></table>
+  </div>
+  <div class="action-bar">
+    <button class="btn btn-primary" onclick="applyRecurring()">⟳ TERAPKAN KE BULAN INI</button>
+  </div>
+</div>
 
 </main>
 </div>
@@ -467,7 +618,7 @@ const DEFAULT_BUDGETS={
 };
 
 let sb,USER_ID=null;
-let S={budgets:JSON.parse(JSON.stringify(DEFAULT_BUDGETS)),txs:{},month:null};
+let S={budgets:JSON.parse(JSON.stringify(DEFAULT_BUDGETS)),txs:{},month:null,goals:[],recurring:[]};
 let connected=false;
 
 // ── Auth UI ──
@@ -536,6 +687,8 @@ async function loadAppData(uid,email){
     S={budgets:JSON.parse(JSON.stringify(DEFAULT_BUDGETS)),txs:{},month:null};
     await loadBudgets();
     await loadTxs();
+    await loadGoals();
+    await loadRecurring();
     connected=true;
     setSyncStatus('ok','Tersinkron');
     document.getElementById('overlay').style.display='none';
@@ -571,7 +724,8 @@ async function initSupabase(){
     if(event==='SIGNED_OUT'){
       appReady=false;
       USER_ID=null;
-      S={budgets:JSON.parse(JSON.stringify(DEFAULT_BUDGETS)),txs:{},month:null};      document.getElementById('userBadge').textContent='—';
+      S={budgets:JSON.parse(JSON.stringify(DEFAULT_BUDGETS)),txs:{},month:null};
+      document.getElementById('userBadge').textContent='—';
       showAuthScreen();
     }
   });
@@ -690,6 +844,8 @@ function nav(name,el){
   if(name==='grafik')renderCharts();
   if(name==='laporan')renderReport();
   if(name==='pengaturan')renderSettings();
+  if(name==='goals')renderGoals();
+  if(name==='recurring'){buildRecurCatSel();renderRecurring();}
 }
 
 // ── Dashboard ──
@@ -905,8 +1061,10 @@ async function resetAll(){
   setSyncStatus('syncing','Mereset...');
   await sb.from('transactions').delete().eq('user_id',USER_ID);
   await sb.from('budgets').delete().eq('user_id',USER_ID);
+  await sb.from('goals').delete().eq('user_id',USER_ID);
+  await sb.from('recurring').delete().eq('user_id',USER_ID);
   S.budgets=JSON.parse(JSON.stringify(DEFAULT_BUDGETS));
-  S.txs={};
+  S.txs={};S.goals=[];S.recurring=[];
   await seedBudgets();
   setSyncStatus('ok','Tersinkron');
   renderAll();toast('Data direset');
@@ -930,6 +1088,193 @@ function toast(msg,type='ok'){
 
 
 // ── Goals CRUD ──
+async function loadGoals(){
+  const{data,error}=await sb.from('goals').select('*').eq('user_id',USER_ID).order('created_at');
+  if(error)throw error;
+  S.goals=(data||[]).map(r=>({id:r.id,name:r.name,target:+r.target,saved:+r.saved,deadline:r.deadline,color:r.color||'#57ab5a'}));
+}
+
+async function addGoal(){
+  const name=document.getElementById('gName').value.trim();
+  const target=unFmt(document.getElementById('gTarget').value);
+  const saved=unFmt(document.getElementById('gSaved').value)||0;
+  const deadline=document.getElementById('gDeadline').value||null;
+  if(!name||!target){toast('Nama dan target wajib diisi','err');return}
+  const colors=['#57ab5a','#539bf5','#daaa3f','#e5534b','#986ee2','#3bc9db'];
+  const color=colors[S.goals.length%colors.length];
+  const{data,error}=await sb.from('goals').insert({user_id:USER_ID,name,target,saved,deadline,color}).select().single();
+  if(error){toast('Gagal simpan goal','err');return}
+  S.goals.push({id:data.id,name,target,saved,deadline,color});
+  document.getElementById('gName').value='';
+  document.getElementById('gTarget').value='';
+  document.getElementById('gSaved').value='';
+  document.getElementById('gDeadline').value='';
+  renderGoals();toast('Goal ditambahkan');
+}
+
+async function updateGoalSaved(id,delta){
+  const g=S.goals.find(x=>x.id===id);
+  if(!g)return;
+  const newSaved=Math.max(0,g.saved+delta);
+  const{error}=await sb.from('goals').update({saved:newSaved}).eq('id',id).eq('user_id',USER_ID);
+  if(error){toast('Gagal update','err');return}
+  g.saved=newSaved;
+  renderGoals();toast(delta>0?`+${idr(delta)} ditambahkan`:`${idr(Math.abs(delta))} dikurangi`);
+}
+
+async function deleteGoal(id){
+  if(!confirm('Hapus goal ini?'))return;
+  const{error}=await sb.from('goals').delete().eq('id',id).eq('user_id',USER_ID);
+  if(error){toast('Gagal hapus','err');return}
+  S.goals=S.goals.filter(x=>x.id!==id);
+  renderGoals();toast('Goal dihapus');
+}
+
+function renderGoals(){
+  // Health Score
+  const m=S.month;
+  const incB=totalBudget('income'),incR=totalReal(m,'income');
+  const outB=totalBudget('fixed')+totalBudget('variable'),outR=totalReal(m,'fixed')+totalReal(m,'variable');
+  const savR=totalReal(m,'saving'),savB=totalBudget('saving');
+  const savingRate=incR>0?Math.round(savR/incR*100):0;
+  const budgetComp=outB>0?Math.max(0,Math.round((1-Math.max(0,outR-outB)/outB)*100)):100;
+  const surplusScore=incR>0?Math.min(100,Math.round((incR-outR)/incR*100+50)):50;
+  const score=Math.min(100,Math.round((savingRate*0.4+budgetComp*0.35+surplusScore*0.25)));
+  const scoreColor=score>=75?'var(--green)':score>=50?'var(--amber)':'var(--red)';
+  const scoreLabel=score>=75?'Sehat':score>=50?'Perlu Perhatian':'Kritis';
+  document.getElementById('healthBar').innerHTML=`<div class="health-wrap">
+    <div><div class="health-score" style="color:${scoreColor}">${score}</div><div class="health-label">${scoreLabel}</div></div>
+    <div class="health-detail">
+      <div class="health-item"><span>Saving Rate</span><span>${savingRate}%</span></div>
+      <div class="health-item"><span>Budget Compliance</span><span>${budgetComp}%</span></div>
+      <div class="health-item"><span>Surplus Score</span><span>${Math.max(0,surplusScore)}%</span></div>
+    </div>
+  </div>`;
+
+  // Goals grid
+  if(!S.goals.length){
+    document.getElementById('goalsGrid').innerHTML=`<div class="empty" style="grid-column:1/-1;padding:32px">// belum ada goal — tambahkan di atas</div>`;
+    return;
+  }
+  document.getElementById('goalsGrid').innerHTML=S.goals.map(g=>{
+    const p=g.target>0?Math.min(100,Math.round(g.saved/g.target*100)):0;
+    const daysLeft=g.deadline?Math.ceil((new Date(g.deadline)-new Date())/(1000*60*60*24)):null;
+    const dlText=daysLeft!==null?(daysLeft<0?'Expired':`${daysLeft} hari lagi`):'—';
+    const remaining=Math.max(0,g.target-g.saved);
+    return`<div class="goal-card">
+      <div class="goal-card-head">
+        <div><div class="goal-name">${g.name}</div><div class="goal-deadline">Deadline: ${dlText}</div></div>
+        <button class="btn-danger" onclick="deleteGoal(${g.id})">×</button>
+      </div>
+      <div class="goal-amounts">
+        <div class="goal-saved" style="color:${g.color}">${idr(g.saved)}</div>
+        <div class="goal-target">dari ${idr(g.target)}</div>
+      </div>
+      <div class="goal-bar"><div class="goal-bar-fill" style="width:${p}%;background:${g.color}"></div></div>
+      <div class="goal-pct">${p}% tercapai${remaining>0?' · sisa '+idr(remaining):' ✓'}</div>
+      <div class="goal-actions">
+        <button class="btn" style="flex:1;font-size:10px" onclick="promptGoalUpdate(${g.id},1)">+ Tambah</button>
+        <button class="btn" style="flex:1;font-size:10px" onclick="promptGoalUpdate(${g.id},-1)">− Kurangi</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function promptGoalUpdate(id,sign){
+  const g=S.goals.find(x=>x.id===id);
+  if(!g)return;
+  const input=prompt(`${sign>0?'Tambah ke':'Kurangi dari'} "${g.name}" (Rp):`);
+  if(!input)return;
+  const amt=+(input.replace(/[^0-9]/g,''));
+  if(!amt||amt<=0){toast('Jumlah tidak valid','err');return}
+  updateGoalSaved(id,sign*amt);
+}
+
+// ── Recurring CRUD ──
+async function loadRecurring(){
+  const{data,error}=await sb.from('recurring').select('*').eq('user_id',USER_ID).order('day_of_month');
+  if(error)throw error;
+  S.recurring=(data||[]).map(r=>({id:r.id,cat:r.cat,catType:r.cat_type,note:r.note,amount:+r.amount,day:r.day_of_month,active:r.active}));
+}
+
+function buildRecurCatSel(){
+  const sel=document.getElementById('rCat');if(!sel)return;sel.innerHTML='';
+  [{l:'Pemasukan',t:'income'},{l:'Pengeluaran Tetap',t:'fixed'},{l:'Pengeluaran Variabel',t:'variable'},{l:'Tabungan',t:'saving'}].forEach(g=>{
+    const og=document.createElement('optgroup');og.label=g.l;
+    S.budgets[g.t].forEach(r=>{const o=document.createElement('option');o.value=JSON.stringify({cat:r.name,catType:g.t});o.textContent=r.name;og.appendChild(o)});
+    sel.appendChild(og);
+  });
+}
+
+async function addRecurring(){
+  const day=+document.getElementById('rDay').value||1;
+  const {cat,catType}=JSON.parse(document.getElementById('rCat').value);
+  const note=document.getElementById('rNote').value.trim();
+  const amount=unFmt(document.getElementById('rAmt').value);
+  const active=document.getElementById('rActive').value==='true';
+  if(!amount){toast('Jumlah wajib diisi','err');return}
+  const{data,error}=await sb.from('recurring').insert({user_id:USER_ID,cat,cat_type:catType,note:note||cat,amount,day_of_month:day,active}).select().single();
+  if(error){toast('Gagal simpan','err');return}
+  S.recurring.push({id:data.id,cat,catType,note:note||cat,amount,day,active});
+  document.getElementById('rNote').value='';
+  document.getElementById('rAmt').value='';
+  renderRecurring();toast('Template ditambahkan');
+}
+
+async function toggleRecurring(id){
+  const r=S.recurring.find(x=>x.id===id);if(!r)return;
+  r.active=!r.active;
+  await sb.from('recurring').update({active:r.active}).eq('id',id).eq('user_id',USER_ID);
+  renderRecurring();
+}
+
+async function deleteRecurring(id){
+  if(!confirm('Hapus template ini?'))return;
+  await sb.from('recurring').delete().eq('id',id).eq('user_id',USER_ID);
+  S.recurring=S.recurring.filter(x=>x.id!==id);
+  renderRecurring();toast('Template dihapus');
+}
+
+function renderRecurring(){
+  if(!S.recurring.length){
+    document.getElementById('recurBody').innerHTML=`<tr><td colspan="6"><div class="empty">// belum ada template</div></td></tr>`;
+    return;
+  }
+  document.getElementById('recurBody').innerHTML=S.recurring.map(r=>`<tr>
+    <td style="color:var(--ink3)">Tgl ${r.day}</td>
+    <td><span class="badge ${r.catType}">${r.cat}</span></td>
+    <td style="font-family:var(--serif);font-size:13px;color:var(--ink3)">${r.note}</td>
+    <td class="amt">${idr(r.amount)}</td>
+    <td><span style="color:${r.active?'var(--green)':'var(--ink4)'};font-size:10px;font-family:var(--mono)">${r.active?'Aktif':'Nonaktif'}</span></td>
+    <td style="display:flex;gap:6px">
+      <button class="btn" style="font-size:10px;padding:4px 8px" onclick="toggleRecurring(${r.id})">${r.active?'Nonaktifkan':'Aktifkan'}</button>
+      <button class="btn-danger" onclick="deleteRecurring(${r.id})">× hapus</button>
+    </td>
+  </tr>`).join('');
+}
+
+async function applyRecurring(){
+  const active=S.recurring.filter(r=>r.active);
+  if(!active.length){toast('Tidak ada template aktif','warn');return}
+  const m=S.month;
+  const[y,mo]=m.split('-');
+  let added=0;
+  for(const r of active){
+    const day=String(Math.min(r.day,new Date(+y,+mo,0).getDate())).padStart(2,'0');
+    const date=`${m}-${day}`;
+    const already=(S.txs[m]||[]).some(t=>t.cat===r.cat&&t.catType===r.catType&&t.date===date&&t.src==='r');
+    if(already)continue;
+    const newId=await insertTx({date,cat:r.cat,catType:r.catType,note:r.note,amount:r.amount,src:'r'});
+    if(newId){
+      if(!S.txs[m])S.txs[m]=[];
+      S.txs[m].push({id:newId,date,cat:r.cat,catType:r.catType,note:r.note,amount:r.amount,src:'r'});
+      added++;
+    }
+  }
+  if(added>0){renderDash();renderTx();toast(`${added} transaksi berulang diterapkan`)}
+  else toast('Semua template sudah diterapkan bulan ini','warn');
+}
+
 // ── PWA Service Worker ──
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
